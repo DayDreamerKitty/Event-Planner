@@ -21,6 +21,6 @@ router.delete("/:eventId", eventDelete);
 
 router.get("/:eventId", eventDetail);
 
-router.get("/booked", eventBooked);
+router.post("/b", eventBooked);
 
 module.exports = router;

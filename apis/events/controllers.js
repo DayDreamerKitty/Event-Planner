@@ -75,7 +75,9 @@ const eventDetail = async (req, res, next) => {
 
 const eventBooked = async (req, res, next) => {
   try {
-    const fullyBooked = await Planner.find({ numOfSeats }, { bookedSeats });
+    const fullyBooked = await Planner.find({
+      $expr: { $eq: ["$numOfSeats", "$bookedSeats"] },
+    });
     return res.json(fullyBooked);
   } catch (error) {
     next(error);
