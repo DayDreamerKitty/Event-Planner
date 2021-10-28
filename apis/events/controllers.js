@@ -28,11 +28,25 @@ const eventUpdate = async (req, res, next) => {
     if (event) {
       return res.json(event);
     } else {
-      return res.status(404).json({ message: "this product doesn't exist " });
+      return res.status(404).json({ message: "this event doesn't exist " });
     }
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
 };
 
-module.exports = { eventListFetch, eventCreate, eventUpdate };
+const eventDelete = async (req, res, next) => {
+  try {
+    const foundEvent = await Planner.findById(req.params.eventId);
+    if (foundEvent) {
+      await foundEvent.remove();
+      return res.status(204).end();
+    } else {
+      return res.status(404).json({ message: "this event doesn't exist " });
+    }
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
+
+module.exports = { eventListFetch, eventCreate, eventUpdate, eventDelete };

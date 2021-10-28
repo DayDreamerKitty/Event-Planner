@@ -15,6 +15,6 @@ router.get("/", eventListFetch);
 
 router.put("/:eventId", eventUpdate);
 
-// router.delete("/:eventId", eventDelete);
+router.delete("/:eventId", eventDelete);
 
 module.exports = router;
