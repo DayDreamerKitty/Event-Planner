@@ -5,7 +5,7 @@ const eventListFetch = async (req, res, next) => {
     const events = await Planner.find();
     return res.json(events);
   } catch (error) {
-    return res.status(500).json({ message: error.message });
+    next(error);
   }
 };
 
@@ -14,10 +14,9 @@ const eventCreate = async (req, res, next) => {
     const newEvent = await Planner.create(req.body);
     res.status(201).json(newEvent);
   } catch (error) {
-    return res.status(500).json({ message: error.message });
+    next(error);
   }
 };
-
 const eventUpdate = async (req, res, next) => {
   const { eventId } = req.params;
   try {
@@ -28,10 +27,14 @@ const eventUpdate = async (req, res, next) => {
     if (event) {
       return res.json(event);
     } else {
-      return res.status(404).json({ message: "this event doesn't exist " });
+      const errorMsg = {
+        status: 404,
+        message: "Event not found!",
+      };
+      next(errorMsg);
     }
   } catch (error) {
-    return res.status(500).json({ message: error.message });
+    next(error);
   }
 };
 
@@ -42,10 +45,14 @@ const eventDelete = async (req, res, next) => {
       await foundEvent.remove();
       return res.status(204).end();
     } else {
-      return res.status(404).json({ message: "this event doesn't exist " });
+      const errorMsg = {
+        status: 404,
+        message: "Event not found!",
+      };
+      next(errorMsg);
     }
   } catch (error) {
-    return res.status(500).json({ message: error.message });
+    next(error);
   }
 };
 
@@ -55,13 +62,25 @@ const eventDetail = async (req, res, next) => {
     if (detailEvent) {
       return res.json(detailEvent);
     } else {
-      return res.status(404).json({ message: "this event doesn't exist " });
+      const errorMsg = {
+        status: 404,
+        message: "Event not found!",
+      };
+      next(errorMsg);
     }
   } catch (error) {
-    return res.status(500).json({ message: error.message });
+    next(error);
   }
 };
 
+const eventBooked = async (req, res, next) => {
+  try {
+    const fullyBooked = await Planner.find({ numOfSeats }, { bookedSeats });
+    return res.json(fullyBooked);
+  } catch (error) {
+    next(error);
+  }
+};
 module.exports = {
   eventListFetch,
   eventCreate,
