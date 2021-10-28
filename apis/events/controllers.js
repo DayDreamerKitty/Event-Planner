@@ -40,9 +40,9 @@ const eventUpdate = async (req, res, next) => {
 
 const eventDelete = async (req, res, next) => {
   try {
-    const foundEvent = await Planner.findById(req.params.eventId);
+    const foundEvent = await Planner.findByIdAndRemove(req.params.eventId);
+    // const manyEvent = await Planner.deleteMany(req.body.eventId);
     if (foundEvent) {
-      await foundEvent.remove();
       return res.status(204).end();
     } else {
       const errorMsg = {
@@ -83,6 +83,15 @@ const eventBooked = async (req, res, next) => {
     next(error);
   }
 };
+
+const eventLimit = async (req, res, next) => {
+  try {
+    const limitedEvents = await Planner.find({ offset: 5, limit: 2 });
+    return res.json(limitedEvents);
+  } catch (error) {
+    next(error);
+  }
+};
 module.exports = {
   eventListFetch,
   eventCreate,
@@ -90,4 +99,5 @@ module.exports = {
   eventDelete,
   eventDetail,
   eventBooked,
+  eventLimit,
 };

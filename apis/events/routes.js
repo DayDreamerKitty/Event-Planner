@@ -7,6 +7,7 @@ const {
   eventDelete,
   eventDetail,
   eventBooked,
+  eventLimit,
 } = require("./controllers");
 
 const router = express.Router();
@@ -21,6 +22,8 @@ router.delete("/:eventId", eventDelete);
 
 router.get("/:eventId", eventDetail);
 
-router.post("/b", eventBooked);
+router.post("/booked", eventBooked);
+
+router.post("/limit", eventLimit);
 
 module.exports = router;
