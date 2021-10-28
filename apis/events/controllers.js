@@ -49,4 +49,24 @@ const eventDelete = async (req, res, next) => {
   }
 };
 
-module.exports = { eventListFetch, eventCreate, eventUpdate, eventDelete };
+const eventDetail = async (req, res, next) => {
+  try {
+    const detailEvent = await Planner.findById(req.params.eventId);
+    if (detailEvent) {
+      return res.json(detailEvent);
+    } else {
+      return res.status(404).json({ message: "this event doesn't exist " });
+    }
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
+
+module.exports = {
+  eventListFetch,
+  eventCreate,
+  eventUpdate,
+  eventDelete,
+  eventDetail,
+  eventBooked,
+};

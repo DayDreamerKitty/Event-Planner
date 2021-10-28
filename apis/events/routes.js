@@ -5,6 +5,8 @@ const {
   eventCreate,
   eventUpdate,
   eventDelete,
+  eventDetail,
+  eventBooked,
 } = require("./controllers");
 
 const router = express.Router();
@@ -16,5 +18,9 @@ router.get("/", eventListFetch);
 router.put("/:eventId", eventUpdate);
 
 router.delete("/:eventId", eventDelete);
+
+router.get("/:eventId", eventDetail);
+
+router.get("/", eventBooked);
 
 module.exports = router;
