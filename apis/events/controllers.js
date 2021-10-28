@@ -20,6 +20,19 @@ const eventCreate = async (req, res, next) => {
 
 const eventUpdate = async (req, res, next) => {
   const { eventId } = req.params;
+  try {
+    const event = await Planner.findByIdAndUpdate({ _id: eventId }, req.body, {
+      new: true,
+      runValidators: true,
+    });
+    if (event) {
+      return res.json(event);
+    } else {
+      return res.status(404).json({ message: "this product doesn't exist " });
+    }
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
 };
 
 module.exports = { eventListFetch, eventCreate, eventUpdate };
