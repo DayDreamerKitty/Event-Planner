@@ -1,5 +1,14 @@
 const Planner = require("../../db/model/Planner");
 
+const fetchEvent = async (eventId, next) => {
+  try {
+    const event = await Planner.findById(eventId);
+    return event;
+  } catch (error) {
+    next(error);
+  }
+};
+
 const eventListFetch = async (req, res, next) => {
   try {
     const events = await Planner.find();
@@ -18,21 +27,12 @@ const eventCreate = async (req, res, next) => {
   }
 };
 const eventUpdate = async (req, res, next) => {
-  const { eventId } = req.params;
   try {
-    const event = await Planner.findByIdAndUpdate({ _id: eventId }, req.body, {
+    const event = await Planner.findByIdAndUpdate(req.event, req.body, {
       new: true,
       runValidators: true,
     });
-    if (event) {
-      return res.json(event);
-    } else {
-      const errorMsg = {
-        status: 404,
-        message: "Event not found!",
-      };
-      next(errorMsg);
-    }
+    return res.status(200).json(event);
   } catch (error) {
     next(error);
   }
@@ -40,37 +40,31 @@ const eventUpdate = async (req, res, next) => {
 
 const eventDelete = async (req, res, next) => {
   try {
-    const foundEvent = await Planner.findByIdAndRemove(req.params.eventId);
-    // const manyEvent = await Planner.deleteMany(req.body.eventId);
-    if (foundEvent) {
-      return res.status(204).end();
-    } else {
-      const errorMsg = {
-        status: 404,
-        message: "Event not found!",
-      };
-      next(errorMsg);
-    }
+    await req.event.remove();
+    res.status(204).end();
   } catch (error) {
     next(error);
   }
 };
+//   try {
+//     const foundEvent = await Planner.findByIdAndRemove(req.params.eventId);
+//     // const manyEvent = await Planner.deleteMany(req.body.eventId);
+//     if (foundEvent) {
+//       return res.status(204).end();
+//     } else {
+//       const errorMsg = {
+//         status: 404,
+//         message: "Event not found!",
+//       };
+//       next(errorMsg);
+//     }
+//   } catch (error) {
+//     next(error);
+//   }
+// };
 
 const eventDetail = async (req, res, next) => {
-  try {
-    const detailEvent = await Planner.findById(req.params.eventId);
-    if (detailEvent) {
-      return res.json(detailEvent);
-    } else {
-      const errorMsg = {
-        status: 404,
-        message: "Event not found!",
-      };
-      next(errorMsg);
-    }
-  } catch (error) {
-    next(error);
-  }
+  res.status(200).json(req.event);
 };
 
 const eventBooked = async (req, res, next) => {
@@ -100,4 +94,5 @@ module.exports = {
   eventDetail,
   eventBooked,
   eventLimit,
+  fetchEvent,
 };

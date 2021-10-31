@@ -8,9 +8,20 @@ const {
   eventDetail,
   eventBooked,
   eventLimit,
+  fetchEvent,
 } = require("./controllers");
 
 const router = express.Router();
+
+router.param("eventId", async (req, res, next, eventId) => {
+  const event = await fetchEvent(eventId, next);
+  if (event) {
+    req.event = event;
+    next();
+  } else {
+    next({ status: 404, message: "Event not found!" });
+  }
+});
 
 router.post("/", eventCreate);
 
